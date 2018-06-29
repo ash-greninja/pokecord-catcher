@@ -42,5 +42,7 @@ You can toggle the bot's filtering with some commands.
 
 `<prefix>togglepokemon` - toggles pokemon whitelisting
 
+`<prefix>echo <message>` - has the bot say something
+
 
 your settings will persist accross restarts
