@@ -101,6 +101,11 @@ namespace PokecordCatcherBot
                     File.WriteAllText("state.data", JsonConvert.SerializeObject(State));
                 }
 
+                if (command == "echo")
+                {
+                    await msg.Channel.SendMessageAsync(String.Join(' ', args));
+                }
+
                 return;
             }
 
