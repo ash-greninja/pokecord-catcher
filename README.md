@@ -43,6 +43,10 @@ You can toggle the bot's filtering with some commands.
 
 `<prefix>echo <message>` - has the bot say something
 
+`<prefix>display <pokemon name>` - has the bot display pokemon of the supplied name
+
+`<prefix>trade <pokemon name>` - has the bot trade all of its pokemon of the supplied name
+
 
 your settings will persist accross restarts
 
