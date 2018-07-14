@@ -4,7 +4,7 @@ Paying for an autocatcher for some shitty Pokemon clone on Discord in 2018? haha
 This'll catch you all the pokemon that you want, I guess.
 
 ## how 2 use
-Download the latest release. [release](https://github.com/ExtraConcentratedJuice/pokecord-catcher/releases/tag/1.0)
+Download the latest release. [release](https://github.com/ExtraConcentratedJuice/pokecord-catcher/releases/)
 Keep in mind that if you are updating from an older release, the configuration might've changed.
 
 Configure configuration.json. Everthing in there is fairly obvious.
