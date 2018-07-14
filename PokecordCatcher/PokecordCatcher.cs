@@ -49,7 +49,7 @@ namespace PokecordCatcherBot
             Client = new DiscordSocketClient(new DiscordSocketConfig
             {
 #if DEBUG
-                LogLevel = LogSeverity.Verbose,
+                LogLevel = LogSeverity.Debug,
 #else
                 LogLevel = LogSeverity.Info,
 #endif
@@ -104,6 +104,57 @@ namespace PokecordCatcherBot
                 if (command == "echo")
                 {
                     await msg.Channel.SendMessageAsync(String.Join(' ', args));
+                }
+
+                if (command == "display")
+                {
+                    await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}pokemon --name {String.Join(' ', args)}");
+                }
+
+                if (command == "trade")
+                {
+                    var list = await responseGrabber.SendMessageAndGrabResponse(
+                        (ITextChannel)msg.Channel,
+                        $"{Configuration.PokecordPrefix}pokemon --name {String.Join(' ', args)}",
+                        x => x.Channel.Id == msg.Channel.Id && x.Author.Id == POKECORD_ID && x.Embeds.Count > 0 && x.Embeds.First().Title?.StartsWith("Your") == true,
+                        5
+                    );
+
+                    if (list == null)
+                    {
+                        await msg.Channel.SendMessageAsync("Pokecord didn't display pokemon, aborting.");
+                        return;
+                    }
+
+                    var pokemans = Util.ParsePokemonListing(list.Embeds.First().Description);
+
+                    await Task.Delay(1500);
+
+                    var trade = await responseGrabber.SendMessageAndGrabResponse(
+                        (ITextChannel)msg.Channel,
+                        $"{Configuration.PokecordPrefix}trade <@{Configuration.OwnerID}>",
+                        x => x.Channel.Id == msg.Channel.Id && x.Author.Id == POKECORD_ID && x.Embeds.Count > 0 && x.Embeds.First().Title?.StartsWith("Trade between ") == true,
+                        5
+                    );
+
+                    await Task.Delay(1500);
+
+                    if (trade == null)
+                    {
+                        await msg.Channel.SendMessageAsync("Pokecord didn't create trade, aborting.");
+                        return;
+                    }
+
+                    await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}p add {String.Join(' ', pokemans.Select(x => x.Id))}");
+                    await Task.Delay(1500);
+                    await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}confirm");
+                    await Task.Delay(1500);
+                }
+
+                if (command == "exit")
+                {
+                    await Client.LogoutAsync();
+                    Environment.Exit(0);
                 }
 
                 return;

@@ -1,30 +1,29 @@
 # PokecordCatcher
-paying for a discord pokemon clone autocatcher in 2018 what a meme haha
+Paying for an autocatcher for some shitty Pokemon clone on Discord in 2018? haha lol what a joke
 
-you can hake all you want with this i guess
+This'll catch you all the pokemon that you want, I guess.
 
 ## how 2 use
-downloat from [release](https://github.com/ExtraConcentratedJuice/pokecord-catcher/releases/tag/1.0)
+Download the latest release. [release](https://github.com/ExtraConcentratedJuice/pokecord-catcher/releases/tag/1.0)
+Keep in mind that if you are updating from an older release, the configuration might've changed.
 
-configure config.json
+Configure configuration.json. Everthing in there is fairly obvious.
 
-run bot
+Run the bot.
 
-### how 2 run bot???
-download, install the .net core runtime from [HERE](https://www.microsoft.com/net/download/thank-you/dotnet-runtime-2.1.1-windows-hosting-bundle-installer)
+### How do I run the bot???
+Download, install the .NET Core runtime from [HERE](https://www.microsoft.com/net/download/thank-you/dotnet-runtime-2.1.1-windows-hosting-bundle-installer)
 
-navigate to your bot directory, open a command prompt
-
-run this command
+Navigate to your bot directory and open a command prompt, then run this command:
 
 `dotnet PokecordCatcher.dll`
 
-after that have the bot catch pokemans for u xd
+After that you'll have the bot catch Pokemans for you xd
 
-### ok how i have the pokemon hack bot how do i filter stuff????
+### OK now I have these cool pokeman hax but how do I filter stuff???
 there are built in commands and stuff to help you do that
 
-set OwnerID and UserbotPrefix in config.json first, YOU SHOULD HAVE IT CONFIGURED.
+set OwnerID and UserbotPrefix in config.json first, YOU SHOULD HAVE IT CONFIGURED. If you're confused on whether to include quotes or not, check the example configuration.
 
 Add pokemon names to WhitelistedPokemon if you want to filter to certain pokemon, add guild IDs to WhitelistedGuilds if you want to limit the bot to certain servers.
 
@@ -46,3 +45,24 @@ You can toggle the bot's filtering with some commands.
 
 
 your settings will persist accross restarts
+
+
+### FAQ
+Q: yo why is the bot recognizing some pokemon as other pokemon
+
+
+A: I scraped the shit out of bulbapedia for the pokemon list so it isn't perfect, just use the hashing tool to hash and add pokemon to poke.json
+
+
+
+Q: something isnt working help pls
+
+
+A: check all of the issues on the repo for your problem, if you can't find one then make one
+
+
+
+Q: goddamn this autocatcher sucks wtf
+
+
+A: yeah i know lol how about you make it better by submitting a pull request huh
