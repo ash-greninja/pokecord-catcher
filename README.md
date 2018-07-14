@@ -53,17 +53,14 @@ your settings will persist accross restarts
 
 ### FAQ
 Q: yo why is the bot recognizing some pokemon as other pokemon
-
 A: I scraped the shit out of bulbapedia for the pokemon list so it isn't perfect, just use the hashing tool to hash and add pokemon to poke.json
 
 
 
 Q: something isnt working help pls
-
 A: check all of the issues on the repo for your problem, if you can't find one then make one
 
 
 
 Q: goddamn this autocatcher sucks wtf
-
 A: yeah i know lol how about you make it better by submitting a pull request huh
