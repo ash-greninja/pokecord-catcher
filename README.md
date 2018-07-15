@@ -41,6 +41,8 @@ You can toggle the bot's filtering with some commands.
 
 `<prefix>togglepokemon` - toggles pokemon whitelisting
 
+`<prefix>togglespam` - toggles the bot's built in spammer
+
 `<prefix>echo <message>` - has the bot say something
 
 `<prefix>display <pokemon name>` - has the bot display pokemon of the supplied name
@@ -76,6 +78,14 @@ Don't copy this shit into your config, it won't work because json doesn't suppor
 	"CatchMinDelay": 500,
 	// The maximum delay in MILISECONDS for a catch
 	"CatchMaxDelay": 1000,
+	// The ID of the channel you want the spammer to send messages to.
+	"SpamChannelID": 696969696969,
+	// Minimum delay in MILISECONDS for the spammer.
+	"SpammerMinDelay": 3000,
+	// Maximum delay in MILISECONDS for the spammer.
+	"SpammerMaxDelay": 4500,
+	// Messages for the spammer to send. Selected randomly.
+	"SpammerMessages": ["david has 10 bowling balls", "my name jeff", "THE PAIN", "SAVE ME"],
 	// Guilds that the bot should listen on only when in guild whitelist mode
 	"WhitelistedGuilds": [696969696969, 420420420420]
 }
@@ -97,3 +107,9 @@ A: check all of the issues on the repo for your problem, if you can't find one t
 Q: goddamn this autocatcher sucks wtf
 
 A: yeah i know lol how about you make it better by submitting a pull request huh
+
+------
+
+Q: guild whitelisting/pokemon whitelisting/spammer doesn't work??!?!?!!?!
+
+A: check out the command reference above. use the toggle commands.
