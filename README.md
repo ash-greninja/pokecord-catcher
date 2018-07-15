@@ -54,7 +54,7 @@ your settings will persist accross restarts
 
 Don't copy this shit into your config, it won't work because json doesn't support comments lol just use it as a reference
 
-```
+```javascript
 {
 	// This is your user token. Use google to figure out how to get it.
 	"Token": "ur user token here xd",
