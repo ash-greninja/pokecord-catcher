@@ -13,6 +13,8 @@ namespace PokecordCatcherBot.Models
         public bool EnableLogging { get; set; }
         public bool EnableCatchResponse { get; set; }
         public string CatchResponse { get; set; }
+        public int CatchMinDelay { get; set; }
+        public int CatchMaxDelay { get; set; }
 
         public string[] WhitelistedPokemon { get; set; }
         public ulong[] WhitelistedGuilds { get; set; }

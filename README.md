@@ -50,6 +50,36 @@ You can toggle the bot's filtering with some commands.
 
 your settings will persist accross restarts
 
+### Configuration Documentation
+
+Don't copy this shit into your config, it won't work because json doesn't support comments lol just use it as a reference
+
+```
+{
+	// This is your user token. Use google to figure out how to get it.
+	"Token": "ur user token here xd",
+	// This is the prefix for the pokecord bot.
+	"PokecordPrefix": "-",
+	// This is the prefix that you will use to issue commands to your userbot.
+	"UserbotPrefix": "&",
+	// This is your Discord user ID. Use google to figure out how to get it. All commands be executed by a user with this ID only.
+	"OwnerID": 6969696969696,
+	// If the bot should log catch success/fail
+	"EnableLogging": true,
+	// Enables a response after catching to mock people xd just disable this if you don't want it to respond
+	"EnableCatchResponse": false,
+	// The catch response
+	"CatchResponse": ":joy: :ok_hand: LE POKEMANS XDXD",
+	// A list of pokemon that the bot should only catch while in pokemon whitelist mode
+	"WhitelistedPokemon": ["Rayquaza", "Mew", "Shaymin", "Bidoof", "Starly", "MEME"],
+	// The minimum delay in MILISECONDS for a catch
+	"CatchMinDelay": 500,
+	// The maximum delay in MILISECONDS for a catch
+	"CatchMaxDelay": 1000,
+	// Guilds that the bot should listen on only when in guild whitelist mode
+	"WhitelistedGuilds": [696969696969, 420420420420]
+}
+```
 
 ### FAQ
 Q: yo why is the bot recognizing some pokemon as other pokemon

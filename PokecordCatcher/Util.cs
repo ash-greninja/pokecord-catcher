@@ -8,6 +8,8 @@ namespace PokecordCatcherBot
 {
     public static class Util
     {
+        public static readonly Random rand = new Random();
+
         public static List<PokemonListing> ParsePokemonListing(string str)
         {
             var result = new List<PokemonListing>();

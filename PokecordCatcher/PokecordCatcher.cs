@@ -32,7 +32,7 @@ namespace PokecordCatcherBot
         {
             pokemon = new PokemonComparer(pokemonHashes);
 
-            Configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText("config.json"));
+            UpdateConfiguration("config.json");
 
             if (File.Exists("state.data"))
                 State = JsonConvert.DeserializeObject<State>(File.ReadAllText("state.data"));
@@ -83,7 +83,7 @@ namespace PokecordCatcherBot
 
                 if (command == "reload")
                 {
-                    Configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText("config.json"));
+                    UpdateConfiguration("config.json");
                     await msg.Channel.SendMessageAsync("Configuration reloaded.");
                 }
 
@@ -190,6 +190,13 @@ namespace PokecordCatcherBot
                 return;
             }
 
+            if (Configuration.CatchMinDelay > 0)
+            {
+                int delay = Util.rand.Next(Configuration.CatchMinDelay, Configuration.CatchMaxDelay);
+                Console.WriteLine($"Delaying for {delay}ms before catching the pokemon...");
+                await Task.Delay(delay);
+            }
+
             var resp = await responseGrabber.SendMessageAndGrabResponse(
                 (ITextChannel)msg.Channel,
                 $"{Configuration.PokecordPrefix}catch {name}",
@@ -212,6 +219,18 @@ namespace PokecordCatcherBot
             }
 
             Console.WriteLine();
+        }
+
+        public void UpdateConfiguration(string fileName)
+        {
+            Configuration = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(fileName));
+
+            if (Configuration.CatchMinDelay > Configuration.CatchMaxDelay)
+            {
+                Configuration.CatchMaxDelay = 0;
+                Configuration.CatchMinDelay = 0;
+                Console.WriteLine("WARNING: Your CatchMinDelay is greater than your CatchMaxDelay. Setting it to 0.");
+            }
         }
 
         public async Task Run()
