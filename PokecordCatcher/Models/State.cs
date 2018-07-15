@@ -8,5 +8,6 @@ namespace PokecordCatcherBot.Models
     {
         public bool WhitelistGuilds { get; set; }
         public bool WhitelistPokemon { get; set; }
+        public bool SpammerEnabled { get; set; }
     }
 }

@@ -1,0 +1,110 @@
+﻿using Discord;
+using Discord.WebSocket;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PokecordCatcherBot.Modules
+{
+    public class CatcherService : Service
+    {
+        private readonly PokemonComparer comparer;
+        private readonly HttpClient http;
+
+        public CatcherService(PokecordCatcher bot, string hashPath) : base(bot)
+        {
+            comparer = new PokemonComparer(LoadPokemon(hashPath));
+            http = new HttpClient();
+
+            Client.MessageReceived += async x => Task.Run(async () => await OnMessage(x));
+        }
+
+        private async Task OnMessage(SocketMessage msg)
+        {
+            var guild = ((SocketGuildChannel)msg.Channel).Guild;
+
+            if (State.WhitelistGuilds && !Configuration.WhitelistedGuilds.Contains(guild.Id))
+                return;
+
+            if (msg.Author.Id != PokecordCatcher.POKECORD_ID || msg.Embeds?.Count == 0)
+                return;
+
+            Embed embed = msg.Embeds.First();
+
+            if (embed.Description?.Contains(Configuration.PokecordPrefix + "catch") != true || !embed.Image.HasValue)
+                return;
+
+            Console.WriteLine("Detected pokemon, catching...");
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            string name = comparer.GetPokemon(await http.GetStreamAsync(embed.Image.Value.Url));
+
+            watch.Stop();
+
+            Console.WriteLine($"Found pokemon in {watch.ElapsedMilliseconds}ms");
+
+            if (State.WhitelistPokemon && !Configuration.WhitelistedPokemon.Any(x => x.Equals(name, StringComparison.OrdinalIgnoreCase)))
+            {
+                Console.WriteLine("Pokemon is not whitelisted, ignoring.");
+                Logger.Log($"Ignored a {name} in #{msg.Channel.Name} ({guild.Name})");
+                return;
+            }
+
+            if (Configuration.CatchMinDelay > 0)
+            {
+                int delay = Util.rand.Next(Configuration.CatchMinDelay, Configuration.CatchMaxDelay);
+                Console.WriteLine($"Delaying for {delay}ms before catching the pokemon...");
+                await Task.Delay(delay);
+            }
+
+            var resp = await ResponseGrabber.SendMessageAndGrabResponse(
+                (ITextChannel)msg.Channel,
+                $"{Configuration.PokecordPrefix}catch {name}",
+                x => x.Channel.Id == msg.Channel.Id && x.Author.Id == PokecordCatcher.POKECORD_ID && x.MentionedUsers.Any(y => y.Id == Client.CurrentUser.Id) && x.Content.StartsWith("Congratulations"),
+                5
+            );
+
+            Console.WriteLine(resp == null ? "The Pokecord bot did not respond, catch was a fail." : "Catch confirmed by the Pokecord bot.");
+
+            if (resp != null)
+            {
+                if (Configuration.EnableCatchResponse)
+                    await msg.Channel.SendMessageAsync(Configuration.CatchResponse);
+
+                Logger.Log($"Caught a {name} in #{resp.Channel.Name} ({guild.Name})");
+            }
+            else
+            {
+                Logger.Log($"Failed to catch {name} in #{msg.Channel.Name} ({guild.Name})");
+            }
+
+            Console.WriteLine();
+        }
+
+        private Dictionary<string, byte[]> LoadPokemon(string hashPath)
+        {
+            var hashes = new Dictionary<string, byte[]>();
+
+            foreach (var x in JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashPath)))
+            {
+                var str = x.Value.Substring(2);
+
+                int charsLen = str.Length;
+                byte[] bytes = new byte[charsLen / 2];
+
+                for (int i = 0; i < charsLen; i += 2)
+                    bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
+
+                hashes.Add(x.Key, bytes);
+            }
+
+            return hashes;
+        }
+    }
+}

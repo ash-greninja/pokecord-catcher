@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace PokecordCatcherBot
 {
@@ -30,6 +32,23 @@ namespace PokecordCatcherBot
             }
 
             return result;
+        }
+
+        public static T ReadConfiguration<T>(string path) where T : new()
+        {
+            T data;
+
+            if (File.Exists(path))
+            {
+                data = JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            }
+            else
+            {
+                data = new T();
+                File.WriteAllText("state.data", JsonConvert.SerializeObject(data));
+            }
+
+            return data;
         }
     }
 }

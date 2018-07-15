@@ -14,7 +14,7 @@ namespace PokecordCatcherBot
 
         private async static Task ProcessLogs()
         {
-            while (true)
+            while (isLogging)
             {
                 while (loggerQueue.Count > 0)
                 {
@@ -28,7 +28,7 @@ namespace PokecordCatcherBot
             }
         }
 
-        public async static Task StartLogging()
+        public static void StartLogging()
         {
             if (!isLogging)
             {
