@@ -147,7 +147,7 @@ namespace PokecordCatcherBot.Services
             await Task.Delay(1500);
         }
 
-        [Command(nameof(TradeById), "Trades pokemon with a certain ID.")]
+        [Command(nameof(TradeById), "Trades a pokemon with a certain ID.")]
         public async Task TradeById(SocketMessage msg, string[] args)
         {
             if (args.Length != 1)

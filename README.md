@@ -4,8 +4,12 @@ Paying for an autocatcher for some shitty Pokemon clone on Discord in 2018? haha
 This'll catch you all the pokemon that you want, I guess.
 
 ## how 2 use
-Download the latest release. [release](https://github.com/ExtraConcentratedJuice/pokecord-catcher/releases/)
-Keep in mind that if you are updating from an older release, the configuration might've changed.
+
+![this one right here](https://i.imgur.com/nL98ALx.png)
+
+Download the latest release. [Release](https://github.com/ExtraConcentratedJuice/pokecord-catcher/releases/)
+
+Keep in mind that if you are updating from an older release, the configuration might've changed. Take a glance at the default configuration included in any new releases and update yours accordingly.
 
 Configure configuration.json. Everthing in there is fairly obvious.
 
@@ -48,6 +52,8 @@ You can toggle the bot's filtering with some commands.
 `<prefix>display <pokemon name>` - has the bot display pokemon of the supplied name
 
 `<prefix>trade <pokemon name>` - has the bot trade all of its pokemon of the supplied name
+
+`<prefix>tradebyid <pokemon id>` - has the bot a pokemon with the supplied ID to you
 
 
 your settings will persist accross restarts
