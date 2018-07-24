@@ -12,10 +12,7 @@ namespace PokecordCatcherBot
     {
         private readonly DiscordSocketClient client;
 
-        public ResponseGrabber(DiscordSocketClient client)
-        {
-            this.client = client;
-        }
+        public ResponseGrabber(DiscordSocketClient client) => this.client = client;
 
         public Task<SocketMessage> SendMessageAndGrabResponse(ITextChannel channel, string msg, Func<SocketMessage, bool> predicate, double timeout) =>
             GrabResponse(async () => await channel.SendMessageAsync(msg), predicate, timeout);

@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using PokecordCatcherBot.Attributes;
 using PokecordCatcherBot.Models;
 
-namespace PokecordCatcherBot.Modules
+namespace PokecordCatcherBot.Services
 {
     public class CommandService : Service
     {
@@ -21,7 +21,7 @@ namespace PokecordCatcherBot.Modules
         {
             commandMethods = FindCommandMethods();
 
-            Client.MessageReceived += async x => Task.Run(async () => await OnMessage(x));
+            Client.MessageReceived += OnMessage;
         }
 
         private async Task OnMessage(SocketMessage msg)
@@ -39,22 +39,19 @@ namespace PokecordCatcherBot.Modules
             {
                 try
                 {
-                    var t = (Task)command.Invoke(this, new object[] { msg, args.ToArray() });
-                    await t;
+                    var cmdTask = (Task)command.Invoke(this, new object[] { msg, args.ToArray() });
+
+                    var task = Task.Run(async () => await cmdTask)
+                        .ContinueWith(t => Console.WriteLine(t.Exception.Flatten().InnerException), TaskContinuationOptions.OnlyOnFaulted);
                 }
                 catch (Exception e) { Console.WriteLine(e); }
             }
         }
 
-        private List<MethodInfo> FindCommandMethods()
-        {
-            List<MethodInfo> methods = new List<MethodInfo>();
-
-            methods.AddRange(typeof(PokecordCatcher).Assembly.GetTypes()
-                .SelectMany(x => x.GetMethods()).Where(x => x.GetCustomAttribute(typeof(CommandAttribute)) != null));
-
-            return methods;
-        }
+        private List<MethodInfo> FindCommandMethods() =>
+            typeof(PokecordCatcher).Assembly.GetTypes()
+                .SelectMany(x => x.GetMethods())
+                .Where(x => x.GetCustomAttribute(typeof(CommandAttribute)) != null).ToList();
 
         [Command(nameof(Status), "Displays information about the bot's state.")]
         public async Task Status(SocketMessage msg, string[] args)
@@ -115,7 +112,7 @@ namespace PokecordCatcherBot.Modules
             var list = await ResponseGrabber.SendMessageAndGrabResponse(
                 (ITextChannel)msg.Channel,
                 $"{Configuration.PokecordPrefix}pokemon --name {String.Join(' ', args)}",
-                x => x.Channel.Id == msg.Channel.Id && x.Author.Id == PokecordCatcher.POKECORD_ID && x.Embeds.Count > 0 && x.Embeds.First().Title?.StartsWith("Your") == true,
+                x => MessagePredicates.PokemonListingMessage(x, msg),
                 5
             );
 
@@ -132,7 +129,7 @@ namespace PokecordCatcherBot.Modules
             var trade = await ResponseGrabber.SendMessageAndGrabResponse(
                 (ITextChannel)msg.Channel,
                 $"{Configuration.PokecordPrefix}trade <@{Configuration.OwnerID}>",
-                x => x.Channel.Id == msg.Channel.Id && x.Author.Id == PokecordCatcher.POKECORD_ID && x.Embeds.Count > 0 && x.Embeds.First().Title?.StartsWith("Trade between ") == true,
+                x => MessagePredicates.TradeMessage(x, msg),
                 5
             );
 
@@ -145,6 +142,36 @@ namespace PokecordCatcherBot.Modules
             }
 
             await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}p add {String.Join(' ', pokemans.Select(x => x.Id))}");
+            await Task.Delay(1500);
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}confirm");
+            await Task.Delay(1500);
+        }
+
+        [Command(nameof(TradeById), "Trades pokemon with a certain ID.")]
+        public async Task TradeById(SocketMessage msg, string[] args)
+        {
+            if (args.Length != 1)
+            {
+                await msg.Channel.SendMessageAsync("Invalid arguments. Please supply an ID.");
+                return;
+            }
+
+            var trade = await ResponseGrabber.SendMessageAndGrabResponse(
+                (ITextChannel)msg.Channel,
+                $"{Configuration.PokecordPrefix}trade <@{Configuration.OwnerID}>",
+                x => MessagePredicates.TradeMessage(x, msg),
+                5
+            );
+
+            await Task.Delay(1500);
+
+            if (trade == null)
+            {
+                await msg.Channel.SendMessageAsync("Pokecord didn't create trade, aborting.");
+                return;
+            }
+
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}p add {args[0]}");
             await Task.Delay(1500);
             await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}confirm");
             await Task.Delay(1500);

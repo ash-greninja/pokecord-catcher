@@ -5,7 +5,7 @@ using System.Threading;
 using Discord;
 using Discord.WebSocket;
 
-namespace PokecordCatcherBot.Modules
+namespace PokecordCatcherBot.Services
 {
     public class SpammerService : Service
     {

@@ -3,6 +3,7 @@ using PokecordCatcherBot.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PokecordCatcherBot
 {
@@ -15,8 +16,7 @@ namespace PokecordCatcherBot
         protected State State { get => bot.State; }
         protected ResponseGrabber ResponseGrabber { get => bot.ResponseGrabber; }
 
-        public Service(PokecordCatcher bot) => this.bot = bot;
-
         private Service() { }
+        public Service(PokecordCatcher bot) => this.bot = bot;
     }
 }

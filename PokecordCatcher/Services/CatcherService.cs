@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokecordCatcherBot.Modules
+namespace PokecordCatcherBot.Services
 {
     public class CatcherService : Service
     {
@@ -21,7 +21,9 @@ namespace PokecordCatcherBot.Modules
             comparer = new PokemonComparer(LoadPokemon(hashPath));
             http = new HttpClient();
 
-            Client.MessageReceived += async x => Task.Run(async () => await OnMessage(x));
+
+            Client.MessageReceived += async x => Task.Run(async () => await OnMessage(x))
+            .ContinueWith(t => Console.WriteLine(t.Exception.Flatten().InnerException), TaskContinuationOptions.OnlyOnFaulted);
         }
 
         private async Task OnMessage(SocketMessage msg)
@@ -66,7 +68,7 @@ namespace PokecordCatcherBot.Modules
             var resp = await ResponseGrabber.SendMessageAndGrabResponse(
                 (ITextChannel)msg.Channel,
                 $"{Configuration.PokecordPrefix}catch {name}",
-                x => x.Channel.Id == msg.Channel.Id && x.Author.Id == PokecordCatcher.POKECORD_ID && x.MentionedUsers.Any(y => y.Id == Client.CurrentUser.Id) && x.Content.StartsWith("Congratulations"),
+                x => MessagePredicates.SuccessfulCatchMessage(x, msg, Client.CurrentUser.Id),
                 5
             );
 

@@ -1,19 +1,9 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Drawing;
-using System.Threading.Tasks;
-using Shipwreck.Phash;
-using Shipwreck.Phash.Bitmaps;
-using Discord.Rest;
 using PokecordCatcherBot.Models;
-using PokecordCatcherBot.Modules;
+using PokecordCatcherBot.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace PokecordCatcherBot
 {

@@ -39,7 +39,7 @@ namespace PokecordCatcherBot
             return Compare(hash);
         }
 
-        private string Compare(Digest hash)
+        private string Compare(Digest hash, double minSimilarity = 0)
         {
             Dictionary<string, double> similarities = new Dictionary<string, double>();
 
@@ -57,9 +57,17 @@ namespace PokecordCatcherBot
             }
 
             var sim = similarities.OrderByDescending(x => x.Value).First();
-            Console.WriteLine($"Detected '{sim.Key}' with a similarity of {sim.Value}");
 
-            return sim.Key;
+            if (sim.Value >= minSimilarity)
+            {
+                Console.WriteLine($"Detected '{sim.Key}' with a similarity of {sim.Value}");
+                return sim.Key;
+            }
+            else
+            {
+                Console.WriteLine($"Failed to find a Pokemon that satisfies the minimum similarity of {minSimilarity}.");
+                return null;
+            }
         }
     }
 }
