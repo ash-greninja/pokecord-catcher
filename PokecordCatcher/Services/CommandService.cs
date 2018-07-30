@@ -99,6 +99,14 @@ namespace PokecordCatcherBot.Services
         public async Task Display(SocketMessage msg, string[] args) => 
             await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}pokemon --name {String.Join(' ', args)}");
 
+        [Command(nameof(DisplayAll), "Displays all pokemon.")]
+        public async Task DisplayAll(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}pokemon);
+
+        [Command(nameof(Details), "Toggles showing of detailed pokemon stats.")]
+        public async Task Details(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}detailed);
+
         [Command(nameof(Exit), "Exits the userbot program.")]
         public async Task Exit(SocketMessage msg, string[] args)
         {
