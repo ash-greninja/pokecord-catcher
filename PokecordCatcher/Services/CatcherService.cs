@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,9 +19,10 @@ namespace PokecordCatcherBot.Services
 
         public CatcherService(PokecordCatcher bot, string hashPath) : base(bot)
         {
-            comparer = new PokemonComparer(LoadPokemon(hashPath));
+            var pokemon = LoadPokemon(hashPath);
+            comparer = new PokemonComparer(pokemon);
+            Console.WriteLine("Loaded " + pokemon.Select(x => x.Value.Count).Sum() + " pokemon");
             http = new HttpClient();
-
 
             Client.MessageReceived += async x => Task.Run(async () => await OnMessage(x))
             .ContinueWith(t => Console.WriteLine(t.Exception.Flatten().InnerException), TaskContinuationOptions.OnlyOnFaulted);
@@ -89,21 +91,31 @@ namespace PokecordCatcherBot.Services
             Console.WriteLine();
         }
 
-        private Dictionary<string, byte[]> LoadPokemon(string hashPath)
+        private Dictionary<string, List<byte[]>> LoadPokemon(string hashPath)
         {
-            var hashes = new Dictionary<string, byte[]>();
+            var hashes = new Dictionary<string, List<byte[]>>();
 
-            foreach (var x in JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashPath)))
+            var json = JObject.Parse(File.ReadAllText(hashPath));
+
+            foreach (var x in json)
             {
-                var str = x.Value.Substring(2);
+                var strA = x.Value.Value<JArray>();
 
-                int charsLen = str.Length;
-                byte[] bytes = new byte[charsLen / 2];
+                foreach (var s in strA)
+                {
+                    var str = s.Value<string>().Substring(2);
 
-                for (int i = 0; i < charsLen; i += 2)
-                    bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
+                    int charsLen = str.Length;
+                    byte[] bytes = new byte[charsLen / 2];
 
-                hashes.Add(x.Key, bytes);
+                    for (int i = 0; i < charsLen; i += 2)
+                        bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
+
+                    if (hashes.TryGetValue(x.Key, out var val))
+                        val.Add(bytes);
+                    else
+                        hashes.Add(x.Key, new List<byte[]> { bytes });
+                }
             }
 
             return hashes;

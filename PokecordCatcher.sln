@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokecordCatcher", "PokecordCatcher\PokecordCatcher.csproj", "{307051AF-F07F-4652-9435-A25FEAF61088}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokecordCatcher", "PokecordCatcher\PokecordCatcher.csproj", "{307051AF-F07F-4652-9435-A25FEAF61088}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashGenerator", "HashComputer\HashGenerator.csproj", "{0BFF9378-C44A-4A3E-812F-7FEF78CA5665}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HashTool", "HashComputer\HashTool.csproj", "{0BFF9378-C44A-4A3E-812F-7FEF78CA5665}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

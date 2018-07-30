@@ -3,6 +3,7 @@ using Shipwreck.Phash;
 using Shipwreck.Phash.Bitmaps;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -27,17 +28,26 @@ namespace HashGenerator
             Console.WriteLine("Enter a path to the directory of Pokemon that you want to hash:");
             var dirName = Console.ReadLine();
             var files = Directory.GetFiles(dirName);
-            var hashes = new ConcurrentDictionary<string, string>();
 
-            Parallel.ForEach(files, (x) =>
+            var hashes = new ConcurrentDictionary<string, List<string>>();
+
+            foreach (var x in files)
             {
                 Console.WriteLine("Processing " + x);
 
-                var bitmap = (Bitmap)Image.FromFile(x);
+                var file = File.OpenRead(x);
+
+                var bitmap = (Bitmap)Image.FromStream(file);
+
                 var hash = ImagePhash.ComputeDigest(bitmap.ToLuminanceImage()).ToString();
 
-                hashes.AddOrUpdate(Path.GetFileNameWithoutExtension(x), hash, (k, v) => v);
-            });
+                var name = Path.GetFileNameWithoutExtension(x);
+
+                if (hashes.TryGetValue(name, out var val))
+                    val.Add(hash);
+                else
+                    hashes.AddOrUpdate(name, new List<string> { hash }, (k, v) => v);
+            }
 
             File.WriteAllText("poke.json", JsonConvert.SerializeObject(hashes));
         }

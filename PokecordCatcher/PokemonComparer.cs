@@ -6,17 +6,16 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace PokecordCatcherBot
 {
     public class PokemonComparer
     {
-        private readonly ReadOnlyDictionary<string, byte[]> hashes;
+        private readonly ReadOnlyDictionary<string, List<byte[]>> hashes;
         
-        public PokemonComparer(Dictionary<string, byte[]> pokemonHashes)
+        public PokemonComparer(Dictionary<string, List<byte[]>> pokemonHashes)
         {
-            hashes = new ReadOnlyDictionary<string, byte[]>(pokemonHashes);
+            hashes = new ReadOnlyDictionary<string, List<byte[]>>(pokemonHashes);
         }
 
         public string GetPokemon(byte[] image)
@@ -41,33 +40,37 @@ namespace PokecordCatcherBot
 
         private string Compare(Digest hash, double minSimilarity = 0)
         {
-            Dictionary<string, double> similarities = new Dictionary<string, double>();
+            Dictionary<string, List<double>> similarities = new Dictionary<string, List<double>>();
 
             foreach (var x in hashes)
             {
-                var correlation = ImagePhash.GetCrossCorrelation(hash.Coefficents, x.Value);
-
-                if (correlation >= 1.0)
+                foreach (var h in x.Value)
                 {
-                    Console.WriteLine($"Detected '{x.Key}' with a similarity of {correlation}");
-                    return x.Key;
-                }
+                    var correlation = ImagePhash.GetCrossCorrelation(hash.Coefficents, h);
 
-                similarities.Add(x.Key, correlation);
+                    if (correlation >= 1.0)
+                    {
+                        Console.WriteLine($"Detected '{x.Key}' with a similarity of {correlation}");
+                        return x.Key;
+                    }
+
+                    if (similarities.TryGetValue(x.Key, out var val))
+                        val.Add(correlation);
+                    else
+                        similarities.Add(x.Key, new List<double> { correlation });
+                }
             }
 
             var sim = similarities.OrderByDescending(x => x.Value).First();
 
-            if (sim.Value >= minSimilarity)
+            if (sim.Value.Any(x => x >= minSimilarity))
             {
                 Console.WriteLine($"Detected '{sim.Key}' with a similarity of {sim.Value}");
                 return sim.Key;
             }
-            else
-            {
-                Console.WriteLine($"Failed to find a Pokemon that satisfies the minimum similarity of {minSimilarity}.");
-                return null;
-            }
+
+            Console.WriteLine($"Failed to find a Pokemon that satisfies the minimum similarity of {minSimilarity}.");
+            return null;
         }
     }
 }
