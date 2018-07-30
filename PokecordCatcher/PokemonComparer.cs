@@ -61,7 +61,7 @@ namespace PokecordCatcherBot
                 }
             }
 
-            var sim = similarities.OrderByDescending(x => x.Value).First();
+            var sim = similarities.OrderByDescending(x => x.Value.Max()).First();
 
             if (sim.Value.Any(x => x >= minSimilarity))
             {
