@@ -30,7 +30,10 @@ namespace PokecordCatcherBot.Services
 
         private async Task OnMessage(SocketMessage msg)
         {
-            var guild = ((SocketGuildChannel)msg.Channel).Guild;
+            if (!(msg.Channel is SocketGuildChannel channel))
+                return;
+
+            var guild = channel.Guild;
 
             if (State.WhitelistGuilds && !Configuration.WhitelistedGuilds.Contains(guild.Id))
                 return;

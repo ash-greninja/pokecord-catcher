@@ -65,7 +65,7 @@ namespace PokecordCatcherBot
 
             if (sim.Value.Any(x => x >= minSimilarity))
             {
-                Console.WriteLine($"Detected '{sim.Key}' with a similarity of {sim.Value}");
+                Console.WriteLine($"Detected '{sim.Key}' with a similarity of {sim.Value.Max()}");
                 return sim.Key;
             }
 

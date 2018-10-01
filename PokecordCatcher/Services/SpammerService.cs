@@ -27,8 +27,17 @@ namespace PokecordCatcherBot.Services
                     continue;
                 }
 
-                var chan = (ITextChannel)Client.GetChannel(Configuration.SpamChannelID);
-                await chan.SendMessageAsync(Configuration.SpammerMessages[Util.rand.Next(Configuration.SpammerMessages.Length)]);
+                try
+                {
+                    var chan = (ITextChannel)Client.GetChannel(Configuration.SpamChannelID);
+                    await chan.SendMessageAsync(Configuration.SpammerMessages[Util.rand.Next(Configuration.SpammerMessages.Length)]);
+                }
+                catch
+                {
+                    State.SpammerEnabled = false;
+                    continue;
+                }
+                
 
                 Thread.Sleep(Util.rand.Next(Configuration.SpammerMinDelay, Configuration.SpammerMaxDelay));
             }
