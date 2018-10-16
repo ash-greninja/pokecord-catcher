@@ -113,6 +113,22 @@ namespace PokecordCatcherBot.Services
             await Client.LogoutAsync();
             Environment.Exit(0);
         }
+        
+        [Command(nameof(StartTrade), "Starts a trade with the bot owner.")]
+        public async Task StartTrade(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}trade <@{Configuration.OwnerID}>");
+            
+        [Command(nameof(Accept), "Runs accept command")]
+        public async Task Accept(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}accept");
+            
+        [Command(nameof(AddId), "Adds a list of specified IDs")]
+        public async Task AddId(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}p add {String.Join(' ', args)}");
+
+        [Command(nameof(Confirm), "Confirms the current trade.")]
+        public async Task Confirm(SocketMessage msg, string[] args) => 
+            await msg.Channel.SendMessageAsync($"{Configuration.PokecordPrefix}confirm");
 
         [Command(nameof(Trade), "Trades all pokemon a certain name.")]
         public async Task Trade(SocketMessage msg, string[] args)
@@ -123,6 +139,8 @@ namespace PokecordCatcherBot.Services
                 x => MessagePredicates.PokemonListingMessage(x, msg),
                 5
             );
+
+            await Task.Delay(2000);
 
             if (list == null)
             {
@@ -141,7 +159,7 @@ namespace PokecordCatcherBot.Services
                 5
             );
 
-            await Task.Delay(1500);
+            await Task.Delay(2000);
 
             if (trade == null)
             {
@@ -171,7 +189,7 @@ namespace PokecordCatcherBot.Services
                 5
             );
 
-            await Task.Delay(1500);
+            await Task.Delay(2000);
 
             if (trade == null)
             {
