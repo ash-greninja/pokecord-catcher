@@ -1,7 +1,5 @@
 # PokecordCatcher
-Paying for an autocatcher for some shitty Pokemon clone on Discord in 2018? haha lol what a joke
 
-This'll catch you all the pokemon that you want, I guess.
 
 ## how 2 use
 
